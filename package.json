@@ -1,0 +1,23 @@
+{
+  "name": "promises",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "promises-aplus-tests index.js",
+    "caonima": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SunTYu/promise.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SunTYu/promise/issues"
+  },
+  "homepage": "https://github.com/SunTYu/promise#readme",
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
