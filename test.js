@@ -16,4 +16,13 @@ let p = new PromiseA((resolve, reject) => {
 // }).then(res => {
 //   console.log("baga")
 // })
-p.then(1).then(res => {console.log("gg", res)})
+// p.then(1).then(res => {console.log("gg", res)})
+
+let pp = PromiseA.resolve(1)
+
+pp.then(res => {
+  pp.then(res => {
+    console.log(2)
+  })
+  console.log(1)
+})

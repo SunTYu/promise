@@ -9,13 +9,17 @@ function isFunction (fn) {
 function PromiseA (fn) {
   let self = this
   self.state = PENDING
+  self.onFullFilled = []
+  self.onRejected = []
   function resolve (res) {
     setTimeout(() => {
       if (self.state === PENDING) {
         self.state = FULLFILLED
         self.result = res
-        self.onFullFilled && self.onFullFilled(res)
       }
+      self.onFullFilled.forEach(function(cb) {
+        cb(res)
+      })
     })
   }
 
@@ -24,8 +28,10 @@ function PromiseA (fn) {
       if (self.state === PENDING) {
         self.state = REJECTED
         self.result = err
-        self.onRejected && self.onRejected(err)
       }
+      self.onRejected.forEach(function(cb) {
+        cb(err)
+      })
     })
   }
   fn(resolve, reject)
@@ -47,12 +53,12 @@ PromiseA.reject = function (err) {
 
 PromiseA.prototype.then = function (onFullFilled, onRejected) {
   let self = this
-  isFunction(onRejected) && (self.onRejected = onRejected)
+  isFunction(onRejected) && (self.onRejected.push(onRejected))
   let next = new PromiseA(function (resolve, reject) {
     switch(self.state) {
       case PENDING:
         if (isFunction(onFullFilled)) {
-          self.onFullFilled = function (res) {
+          self.onFullFilled.push(function (res) {
             let result
             try {
               result = onFullFilled(res)
@@ -60,18 +66,20 @@ PromiseA.prototype.then = function (onFullFilled, onRejected) {
               reject(err)
             }
             resolve(result)
-          }
+          })
         } else {
-          self.onFullFilled = function (res) {
+          self.onFullFilled.push(function (res) {
             resolve(res)
-          }
+          })
         }
         break
       case FULLFILLED:
+        console.log("gg")
         resolve(self.result)
         break
       case REJECTED:
-        onRejected
+        console.log("gg")
+        reject(self.result)
         break
     }
   })
@@ -80,7 +88,7 @@ PromiseA.prototype.then = function (onFullFilled, onRejected) {
 
 PromiseA.prototype.catch = function (fn) {
   let self = this
-  self.onRejected = fn
+  self.onRejected.push(fn)
 }
 
 PromiseA.defer = PromiseA.deferred = function () {
